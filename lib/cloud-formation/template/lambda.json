@@ -20,7 +20,7 @@
 			}
 		},
 		"MemorySize": 256,
-		"Runtime": "nodejs10.x",
+		"Runtime": "nodejs12.x",
 		"Timeout": 60,
 		"Role": {
 			"Fn::Sub": "${ApiRole.Arn}"
