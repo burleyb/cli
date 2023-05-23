@@ -75,8 +75,12 @@
 	"config": {
 		"leo": {}
 	},
+	"resolutions": {
+	    "graceful-fs": "^4.2.11"
+	},
 	"scripts": {
-		"test": "mocha --require ./test/bootstrap.js --recursive -w"
+		"test": "mocha --require ./test/bootstrap.js --recursive -w",
+		"preinstall": "npx npm-force-resolutions"
 	},
 	"author": "",
 	"license": "MIT"
