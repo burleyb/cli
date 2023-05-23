@@ -20,7 +20,7 @@ let https = require("https");
 let zlib = require("zlib");
 let fs = require("fs");
 let path = require("path");
-let aws = require("aws-sdk");
+let {Lambda} = require("@aws-sdk/client-lambda");
 
 handler();
 async function handler() {
@@ -30,7 +30,7 @@ async function handler() {
 	let tmpDir = process.env.DIR || "/tmp";
 
 
-	let lambda = new aws.Lambda({
+	let lambda = new Lambda({
 		region: process.env.AWS_REGION
 	});
 
@@ -131,7 +131,7 @@ async function buildEvent() {
 		return event;
 	}
 
-	var docClient = new aws.DynamoDB.DocumentClient({
+	var docClient = new aws.DynamoDB({
 		region: process.env.AWS_REGION,
 		maxRetries: 2,
 		convertEmptyValues: true,

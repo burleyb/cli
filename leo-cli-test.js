@@ -22,7 +22,7 @@ program
 		if (debugCmd) {
 			debugCmd = [`--inspect${program.inspectBrk?'-brk' : ''}=${(debugCmd === true) ? "9229" : debugCmd}`];
 		}
-		let rootDir = path.resolve(process.cwd(), dir);
+		let rootDir = path.resolve(process.cwd(), "./");
 		let watchDir = utils.findFirstPackageValue(rootDir, ["microservice"], "__directory");
 		var pkg = require(path.resolve(rootDir, "package.json"));
 
@@ -31,6 +31,7 @@ program
 		var buildConfig = require("./lib/build-config").build;
 
 		let c = buildConfig(rootDir);
+		console.log("-------------- build ------------", c)
 		if (pkg.config && pkg.config.leo && pkg.config.leo.type == "microservice") {
 			process.env.leo_config_bootstrap_path = path.resolve(c._meta.microserviceDir, "leo_config.js");
 			process.env.NODE_ENV = program.env || "dev";
