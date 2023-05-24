@@ -4,7 +4,8 @@
 		"Code": {
 			"S3Bucket": {
 				"Fn::FindInMap": [
-					"RegionMap", {
+					"RegionMap",
+					{
 						"Ref": "AWS::Region"
 					},
 					"S3Bucket"
