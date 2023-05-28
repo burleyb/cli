@@ -16,26 +16,24 @@
 		"leo-cli-debug": "./leo-cli-debug.js"
 	},
 	"dependencies": {
-
+		"@babel/core": "^7.21.8",
+		"@babel/plugin-proposal-export-namespace-from": "^7.18.9",
+		"@babel/plugin-transform-modules-commonjs": "^7.21.5",
+		"@babel/preset-env": "^7.21.5",
+		"@babel/register": "^7.21.0",
 		"archiver": "^5.3.1",
 		"async": "^3.0.1",
-
 		"aws-sdk": "^2.466.0",
-		"babel-core": "^6.26.3",
-		"babel-loader": "^7.1.4",
-		"babel-preset-env": "^1.7.0",
-		"babel-register": "^6.26.0",
-		"babelify": "^8.0.0",
+		"babelify": "^10.0.0",
 		"body-parser": "^1.19.0",
-		"browserify": "^16.2.3",
+		"browserify": "^17.0.0",
 		"colors": "^1.3.3",
 		"commander": "^2.20.0",
-		"copy-webpack-plugin": "^5.1.0",
-		"css-loader": "^2.1.1",
+		"copy-webpack-plugin": "^11.0.0",
+		"css-loader": "^6.7.4",
 		"express": "^4.17.1",
 		"extend": "^3.0.2",
-		"extract-text-webpack-plugin": "^4.0.0-beta.0",
-		"file-loader": "^3.0.1",
+		"file-loader": "^6.2.0",
 		"glob": "^7.1.4",
 		"gulp": "^4.0.2",
 		"gulp-batch": "^1.0.5",
@@ -47,40 +45,40 @@
 		"gulp-sourcemaps": "^2.6.4",
 		"gulp-uglify": "^3.0.0",
 		"gulp-util": "^3.0.8",
-		"html-webpack-plugin": "^3.2.0",
+		"html-webpack-plugin": "^5.5.1",
 		"js-beautify": "^1.10.0",
 		"json-loader": "^0.5.7",
 		"leo-aws": "^1.4.4",
 		"leo-sdk": "^3.1.3",
-		"less": "^3.9.0",
-		"less-loader": "^5.0.0",
+		"less": "^4.1.3",
+		"less-loader": "^11.1.0",
 		"lodash": "^4.17.15",
 		"lodash.merge": "^4.6.2",
+		"mini-css-extract-plugin": "^2.7.6",
 		"mocha": "^6.1.4",
 		"moment": "^2.24.0",
 		"node-watch": "^0.6.2",
 		"readline": "^1.3.0",
 		"source-map-support": "^0.5.12",
 		"stats-webpack-plugin": "^0.7.0",
-		"style-loader": "^0.23.1",
+		"style-loader": "^3.3.3",
 		"through2": "^3.0.1",
-		"url-loader": "^1.1.2",
+		"url-loader": "^4.1.1",
 		"vinyl-buffer": "^1.0.1",
 		"vinyl-source-stream": "^2.0.0",
 		"watchify": "^3.11.1",
-		"webpack": "^4.32.2",
-		"webpack-dev-middleware": "^3.7.0",
+		"webpack": "^5.84.1",
+		"webpack-dev-middleware": "^6.1.1",
 		"webpack-hot-middleware": "^2.25.0"
 	},
 	"config": {
 		"leo": {}
 	},
-	"resolutions": {
-	    "graceful-fs": "^4.2.11"
+	"overrides": {
+		"graceful-fs": "^4.2.11"
 	},
 	"scripts": {
-		"test": "mocha --require ./test/bootstrap.js --recursive -w",
-		"preinstall": "npx npm-force-resolutions"
+		"test": "mocha --require ./test/bootstrap.js --recursive -w"
 	},
 	"author": "",
 	"license": "MIT"
