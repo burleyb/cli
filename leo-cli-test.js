@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 var path = require('path');
-var program = require('commander');
+const { Command } = require('commander');
+const program = new Command();
 var colors = require('colors');
 
 const utils = require("./lib/utils.js");
@@ -18,10 +19,13 @@ program
 	.option("--inspect [port]", "Debug")
 	.usage('<dir> [options]')
 	.action(function(dir) {
+		console.log("[dir1]", dir)
 		let debugCmd = (program.inspectBrk || program.inspect);
 		if (debugCmd) {
 			debugCmd = [`--inspect${program.inspectBrk?'-brk' : ''}=${(debugCmd === true) ? "9229" : debugCmd}`];
 		}
+
+		if (typeof dir !== 'string') dir = '';
 		let rootDir = path.resolve(process.cwd(), dir);
 		let watchDir = utils.findFirstPackageValue(rootDir, ["microservice"], "__directory");
 		var pkg = require(path.resolve(rootDir, "package.json"));
@@ -47,7 +51,7 @@ program
 				LEO_CONFIG: JSON.stringify(c),
 				LEO_PREVENT_RUN_AGAIN: "true",
 				leo_config_bootstrap_path: path.resolve(c._meta.microserviceDir, "leo_config.js"),
-				LEO_RUNNER_EXIT_ON_COMPLETE: (program.watch && !debugCmd) ? "false" : "true" // Don't exit if we are watching an on the same process
+				LEO_RUNNER_EXIT_ON_COMPLETE: (program.watch && !debugCmd) ? "false" : "true", // Don't exit if we are watching an on the same process
 			};
 
 			function runInSameProcess() {

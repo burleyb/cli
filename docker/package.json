@@ -9,6 +9,17 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"aws-sdk": "^2.276.1"
+                "@aws-sdk/client-cloudformation": "^3.427.0",
+                "@aws-sdk/client-dynamodb": "^3.427.0",
+                "@aws-sdk/client-firehose": "^3.427.0",
+                "@aws-sdk/client-kinesis": "^3.427.0",
+                "@aws-sdk/client-s3": "^3.427.0",
+                "@aws-sdk/client-secrets-manager": "^3.427.0",
+                "@aws-sdk/client-sts": "^3.427.0",
+                "@aws-sdk/credential-providers": "^3.427.0",
+                "@aws-sdk/lib-dynamodb": "^3.427.0",
+                "@aws-sdk/lib-storage": "^3.427.0",
+                "@aws-sdk/node-http-handler": "^3.374.0",
+                "@aws-sdk/util-utf8-browser": "^3.259.0"
 	}
 }

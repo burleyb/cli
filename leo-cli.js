@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
-let program = require('commander');
+const { Command } = require('commander');
+const program = new Command();
+
 let configure = require("./package.json");
+
 program
 	.version(configure.version)
 	.command('publish [directory] [options]', "Publish your project to S3")
