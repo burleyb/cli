@@ -19,10 +19,12 @@ program
 	.option("--inspect [port]", "Debug")
 	.usage('<dir> [options]')
 	.action(function(dir) {
-		console.log("[dir1]", dir)
-		let debugCmd = (program.inspectBrk || program.inspect);
+		
+		const options = program.opts();
+		
+		let debugCmd = (options.inspectBrk || options.inspect);
 		if (debugCmd) {
-			debugCmd = [`--inspect${program.inspectBrk?'-brk' : ''}=${(debugCmd === true) ? "9229" : debugCmd}`];
+			debugCmd = [`--inspect${options.inspectBrk?'-brk' : ''}=${(debugCmd === true) ? "9229" : debugCmd}`];
 		}
 
 		if (typeof dir !== 'string') dir = '';
@@ -37,21 +39,21 @@ program
 		let c = buildConfig(rootDir);
 		if (pkg.config && pkg.config.leo && pkg.config.leo.type == "microservice") {
 			process.env.leo_config_bootstrap_path = path.resolve(c._meta.microserviceDir, "leo_config.js");
-			process.env.NODE_ENV = program.env || "dev";
+			process.env.NODE_ENV = options.env || "dev";
 			process.env.LEO_LOCAL = "true";
 			reactRunner(rootDir, c, c);
 		} else {
 			let child = null;
 
 			let envVariables = {
-				NODE_ENV: program.env || "dev",
+				NODE_ENV: options.env || "dev",
 				LEO_LOCAL: "true",
-				LEO_ENV: program.env || "dev",
-				LEO_REGION: program.region,
+				LEO_ENV: options.env || "dev",
+				LEO_REGION: options.region,
 				LEO_CONFIG: JSON.stringify(c),
 				LEO_PREVENT_RUN_AGAIN: "true",
 				leo_config_bootstrap_path: path.resolve(c._meta.microserviceDir, "leo_config.js"),
-				LEO_RUNNER_EXIT_ON_COMPLETE: (program.watch && !debugCmd) ? "false" : "true", // Don't exit if we are watching an on the same process
+				LEO_RUNNER_EXIT_ON_COMPLETE: (options.watch && !debugCmd) ? "false" : "true", // Don't exit if we are watching an on the same process
 			};
 
 			function runInSameProcess() {
@@ -71,7 +73,7 @@ program
 					});
 					child.once("exit", () => {
 						child = null;
-						if (!program.watch) {
+						if (!options.watch) {
 							watcher && watcher.close();
 							watcher = null;
 							process.exit();
@@ -98,7 +100,7 @@ program
 
 			let run = debugCmd ? runInChildProcess : runInSameProcess;
 			run();
-			if (program.watch) {
+			if (options.watch) {
 				let watchDirs = (watchDir ? [watchDir] : []).concat(pkg.config.test ? pkg.config.test.watch : []);
 				var watcher = watch(watchDirs, {
 					recursive: true,

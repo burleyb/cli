@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 var path = require('path');
-var program = require('commander');
+const { Command } = require('commander');
+const program = new Command();
 var colors = require('colors');
 var cmds = require("./lib/build.js")
 program

@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 var path = require('path');
-var program = require('commander');
+const { Command } = require('commander');
+const program = new Command();
+
 var colors = require('colors');
 var buildConfig = require("./lib/build-config").build;
 var cloudformation = require("./lib/cloud-formation.js");
@@ -40,23 +42,23 @@ const progressInterval = {
 	} else {
 		rootDir = path.resolve(process.cwd(), dir);
 	}
+	
+	const options = program.opts();
 
-	if (program.env === true) {
-		program.env = "dev";
+	if (options.env === true) {
+		options.env = "dev";
 	}
 
-	let env = program.env || "dev";
+	let env = options.env || "dev";
 
 	process.env.NODE_ENV = process.env.LEO_ENV = env;
-	process.env.LEO_REGION = program.region;
+	process.env.LEO_REGION = options.region;
 
 	let config = require("./leoCliConfigure.js")(process.env.NODE_ENV);
 	let buildConfig = require("./lib/build-config").build;
 	let pkgConfig = buildConfig(rootDir);
 
 	if (pkgConfig.type !== "microservice" && pkgConfig._meta.microserviceDir) {
-		filter = rootDir.replace(/^.*?(bots|api)[\\/]/, "");
-		force = filter;
 		rootDir = pkgConfig._meta.microserviceDir;
 		pkgConfig = buildConfig(rootDir);
 	}
@@ -76,7 +78,7 @@ const progressInterval = {
 		process.exit();
 	}
 
-	let deployRegions = program.region ? program.region : (devConfig.region || []);
+	let deployRegions = options.region ? options.region : (devConfig.region || []);
 	if (!Array.isArray(deployRegions)) {
 		deployRegions = [deployRegions];
 	}
@@ -86,7 +88,7 @@ const progressInterval = {
 	let buckets = await new Promise((resolve, reject) => {
 		require("./lib/cloud-formation.js").getBuckets(publishConfig, {
 			ignoreErrors: false,
-			name: program.cliStack
+			name: options.cliStack
 		}, (err, data) => {
 			if (err) reject(err);
 			else resolve(data);
@@ -95,23 +97,23 @@ const progressInterval = {
 
 
 	const microservice = JSON.parse(fs.readFileSync(path.resolve(path.resolve(rootDir, "package.json"))));
-	let version = program.ver || microservice.version || "latest";
+	let version = options.ver || microservice.version || "latest";
 
 	let cfFilename = "cloudformation.json";
 	if (version == "latest") {
 		cfFilename = `cloudformation-${version}.json`;
 		version = null;
-	} else if (program.build) {
-		cfFilename = `cloudformation-${program.build}.json`;
+	} else if (options.build) {
+		cfFilename = `cloudformation-${options.build}.json`;
 	}
 
 	version = version ? (version + "/") : "";
-	let tag = (program.tag ? (program.tag.match(/^[/\\]/) ? program.tag : `/${program.tag}`) : "").replace(/\\/g, "/");
+	let tag = (options.tag ? (options.tag.match(/^[/\\]/) ? options.tag : `/${options.tag}`) : "").replace(/\\/g, "/");
 	let data = buckets.map(bucket => {
 		let s3region = bucket.region == "us-east-1" ? "" : "-" + bucket.region;
 		return {
 			region: bucket.region,
-			url: program.url || `https://s3${s3region}.amazonaws.com/${bucket.bucket}/${microservice.name}${tag}/${version}`,
+			url: options.url || `https://s3${s3region}.amazonaws.com/${bucket.bucket}/${microservice.name}${tag}/${version}`,
 			target: bucket.target
 		}
 	}).filter(p => deployRegions.length == 0 || deployRegions.indexOf(p.region) >= 0);
@@ -152,7 +154,7 @@ const progressInterval = {
 			devConfig.stack, url, {
 				Parameters: Parameters
 			}, {
-				forceDeploy: program.forceDeploy,
+				forceDeploy: options.forceDeploy,
 				progressInterval: progressInterval
 			}
 		).then(() => {

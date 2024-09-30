@@ -4,7 +4,9 @@ const leo = require("leo-sdk");
 const async = require("async");
 const fs = require("fs");
 const path = require("path");
-var program = require('commander');
+
+const { Command } = require('commander');
+const program = new Command();
 
 var dynamodb = leo.aws.dynamodb;
 var cp = require("child_process");
@@ -19,10 +21,12 @@ program
 	.action(function (data) {
 		var bots = {};
 		var timeout = null;
+		
+		const options = program.opts();
 
-		let regexExp = program.regex ? data : `^${data}$`;
-		let regexFlags = program.regexFlags || "i";
-		let runner = program.runner || path.resolve(__dirname, "./lib/defaultCronRunner.js");
+		let regexExp = options.regex ? data : `^${data}$`;
+		let regexFlags = options.regexFlags || "i";
+		let runner = options.runner || path.resolve(__dirname, "./lib/defaultCronRunner.js");
 		let regex = new RegExp(regexExp, regexFlags);
 		console.log(regex, regexExp, regexFlags, runner)
 		let cache = {
@@ -79,7 +83,7 @@ program
 		}
 		findNewBots();
 
-		var interval = setInterval(findNewBots, 1000 * (program.poll || 10));
+		var interval = setInterval(findNewBots, 1000 * (options.poll || 10));
 		//do something when app is closing
 		process.on('exit', () => {
 			clearInterval(interval);

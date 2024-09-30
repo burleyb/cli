@@ -1,12 +1,25 @@
 {
   "presets": [
-    ["@babel/preset-env", {
-      "targets": {
-        "node": "20"
-      },
-      "modules": false,
-      "sourceType": "unambiguous"
-    }],
+    [
+      "@babel/preset-react",
+      {
+        "throwIfNamespace": false, // defaults to true
+        "runtime": "automatic" // defaults to classic
+        "importSource": "custom-jsx-library" // defaults to react (only in automatic runtime)
+      }
+    ],    
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "20"
+        },
+  			"modules": "auto",
+  			"sourceType": "unambiguous",
+  			"useBuiltIns": "usage",
+  			"corejs": "3.38.1"
+  		}
+    ]
   ],
-  "plugins": ["transform-decorators-legacy"]
+	"plugins": ["@babel/plugin-proposal-export-namespace-from", "@babel/plugin-transform-modules-commonjs", "@babel/plugin-proposal-function-bind", "@babel/plugin-proposal-decorators"]  
 }

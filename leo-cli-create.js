@@ -2,7 +2,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const program = require('commander');
+const { Command } = require('commander');
+const program = new Command();
 const colors = require('colors');
 const utils = require('./lib/utils');
 const merge = require('lodash.merge');

@@ -44,19 +44,21 @@ const progressInterval = {
 		rootDir = path.resolve(process.cwd(), dir);
 	}
 
+	const options = program.opts();
+
 	// if using just '-d' then set the deploy to 'dev'
-	if (program.env === true || program.deploy === true) {
-		delete program.env;
-		program.deploy = "dev";
+	if (options.env === true || options.deploy === true) {
+		delete options.env;
+		options.deploy = "dev";
 	}
 
-	let env = program.env || program.deploy || "dev";
-	program.run = program.run || program.deploy;
-	let filter = program.filter;
-	let force = program.force;
+	let env = options.env || options.deploy || "dev";
+	options.run = options.run || options.deploy;
+	let filter = options.filter;
+	let force = options.force;
 
 	process.env.NODE_ENV = process.env.LEO_ENV = env;
-	process.env.LEO_REGION = program.region;
+	process.env.LEO_REGION = options.region;
 
 	let config = require("./leoCliConfigure.js")(process.env.NODE_ENV);
 	let buildConfig = require("./lib/build-config").build;
@@ -75,13 +77,14 @@ const progressInterval = {
 		console.log("YOU HAVE NOT SETUP YOUR LEOPUBLISH");
 		process.exit();
 	}
+	console.log("[publishConfig]", publishConfig);
 
 	let startingCloudformation = undefined;
-	if (program.patch) {
-		if (program.patch === true) {
-			program.patch = env;
+	if (options.patch) {
+		if (options.patch === true) {
+			options.patch = env;
 		}
-		if (program.patch == undefined) {
+		if (options.patch == undefined) {
 			console.log("--patch requires a value or --deploy to be set");
 			process.exit();
 		}
@@ -109,10 +112,10 @@ const progressInterval = {
 		}
 	}
 	let mergeBase = [];
-	if (program.merge) {
+	if (options.merge) {
 		config.publish.map(target => {
 			Object.keys(config.deploy || {}).map(deployEnv => {
-				deployConfig = config.deploy[deployEnv];
+				let deployConfig = config.deploy[deployEnv];
 				let deployRegions = deployConfig.region || [];
 				if (!Array.isArray(deployRegions)) {
 					deployRegions = [deployRegions];
@@ -132,23 +135,25 @@ const progressInterval = {
 	mergeBase = (await Promise.all(mergeBase)).filter(cf => !!cf);
 
 	try {
-		let data = await require("./lib/cloud-formation.js").createCloudFormation(rootDir, {
+		let cf = require("./lib/cloud-formation.js")
+		
+		let data = await cf.createCloudFormation(rootDir, {
 			linkedStacks: config.linkedStacks,
 			config: pkgConfig,
 			force: force,
 			targets: publishConfig,
 			filter: filter,
 			alias: process.env.NODE_ENV,
-			publish: program.run || !program.build,
-			tag: program.tag,
-			public: program.public || false,
-			cloudFormationOnly: program.cloudformation,
-			saveCloudFormation: program.save,
+			publish: options.run || !options.build,
+			tag: options.tag,
+			public: options.public || false,
+			cloudFormationOnly: options.cloudformation || false,
+			saveCloudFormation: options.save || false ,
 			cloudformation: startingCloudformation,
 			variations: mergeBase
 		});
 
-		if (program.run || !program.build) {
+		if (options.run || !options.build) {
 			console.log("\n---------------Publish Complete---------------");
 			data.forEach(publish => {
 				console.log(publish.url + `cloudformation${publish.version ? ("-" + publish.version) : ""}.json`);
@@ -156,7 +161,7 @@ const progressInterval = {
 		} else {
 			console.log("\n---------------Build Complete---------------");
 		}
-		if (!program.run) {
+		if (!options.run) {
 			// Nothing more to do
 			process.exit();
 		} else {
@@ -200,13 +205,14 @@ const progressInterval = {
 				}
 
 				tasks.push(publish.target.leoaws.cloudformation.runChangeSet(
-					devConfig.stack, url, {
-					Parameters: Parameters
-				}, {
-					forceDeploy: program.forceDeploy,
-					progressInterval: progressInterval
-				}
-				).then(() => {
+					devConfig.stack, 
+					url, 
+					{
+						Parameters: Parameters
+					}, {
+						forceDeploy: options.forceDeploy,
+						progressInterval: progressInterval
+				}).then(() => {
 					console.log("");
 					console.timeEnd("Update Complete", publish.region);
 				}).catch(err => {
@@ -216,7 +222,7 @@ const progressInterval = {
 			});
 			Promise.all(tasks).then(() => {
 				if (deployErrors > 0) {
-					throw new Error(`Deployment errors, see log for details.`);
+					throw new Error(`Deployment errors, see log for details.`, deployErrors);
 				}
 				progressInterval.stop();
 				tasks.length > 0 && console.log("Ran all deployments");
