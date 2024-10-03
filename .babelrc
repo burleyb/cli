@@ -17,9 +17,21 @@
   			"modules": "auto",
   			"sourceType": "unambiguous",
   			"useBuiltIns": "usage",
-  			"corejs": "3.38.1"
-  		}
+  			"corejs": {
+          "version": "3",
+          "proposals": true
+        }
+      }
     ]
   ],
-	"plugins": ["@babel/plugin-proposal-export-namespace-from", "@babel/plugin-transform-modules-commonjs", "@babel/plugin-proposal-function-bind", "@babel/plugin-proposal-decorators"]  
+	"plugins": [
+    ["polyfill-corejs3", { "method": "usage-global", "version": "3" }],
+    ["@babel/plugin-transform-runtime",
+      {
+        "corejs": 3,
+        "absoluteRuntime": true,
+        "helpers": true,  // Enables runtime helper functions
+        "regenerator": true // Enables async/await tran  
+      }
+  ]  
 }

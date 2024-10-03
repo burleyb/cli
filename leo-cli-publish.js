@@ -59,6 +59,7 @@ const progressInterval = {
 
 	process.env.NODE_ENV = process.env.LEO_ENV = env;
 	process.env.LEO_REGION = options.region;
+	process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 	let config = require("./leoCliConfigure.js")(process.env.NODE_ENV);
 	let buildConfig = require("./lib/build-config").build;
@@ -77,7 +78,7 @@ const progressInterval = {
 		console.log("YOU HAVE NOT SETUP YOUR LEOPUBLISH");
 		process.exit();
 	}
-	console.log("[publishConfig]", publishConfig);
+	// console.log("[publishConfig]", publishConfig);
 
 	let startingCloudformation = undefined;
 	if (options.patch) {
@@ -214,7 +215,7 @@ const progressInterval = {
 						progressInterval: progressInterval
 				}).then(() => {
 					console.log("");
-					console.timeEnd("Update Complete", publish.region);
+					console.timeEnd("Update Complete");
 				}).catch(err => {
 					console.log(` Update Error: ${publish.region}`, err);
 					deployErrors++;

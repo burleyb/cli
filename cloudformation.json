@@ -1,49 +1,63 @@
 {
-	"AWSTemplateFormatVersion": "2010-09-09",
-	"Mappings": {},
-	"Resources": {
-		"PublishBucket": {
-			"Type": "AWS::S3::Bucket",
-			"Properties": {}
-		},
-		"PublishPolicy": {
-			"Type": "AWS::IAM::ManagedPolicy",
-			"Properties": {
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [{
-							"Effect": "Allow",
-							"Action": [
-								"s3:ListBucket",
-								"s3:PutBucketAcl",
-								"s3:ListObjects"
-							],
-							"Resource": {
-								"Fn::Sub": "arn:aws:s3:::${PublishBucket}"
-							}
-						},
-						{
-							"Effect": "Allow",
-							"Action": [
-								"s3:PutObject",
-								"s3:PutObjectAcl"
-							],
-							"Resource": {
-								"Fn::Sub": "arn:aws:s3:::${PublishBucket}/*"
-							}
-						},
-						{
-							"Effect": "Allow",
-							"Action": [
-								"cloudformation:DescribeStackResources",
-								"cloudformation:DescribeStackResource",
-								"cloudformation:DescribeStacks"
-							],
-							"Resource": "*"
-						}
-					]
-				}
-			}
-		}
-	}
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Mappings": {},
+    "Resources": {n
+        "PublishBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "OwnershipControls": {
+                    "Rules": [
+                        {
+                            "ObjectOwnership": "ObjectWriter"
+                        }
+                    ]
+                },
+                "PublicAccessBlockConfiguration": {
+                    "BlockPublicAcls": false,
+                    "BlockPublicPolicy": false,
+                    "IgnorePublicAcls": false,
+                    "RestrictPublicBuckets": false
+                }
+            }
+        },
+        "PublishPolicy": {
+            "Type": "AWS::IAM::ManagedPolicy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:ListBucket",
+                                "s3:ListObjects"
+                            ],
+                            "Resource": {
+                                "Fn::Sub": "arn:aws:s3:::${PublishBucket}"
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject",
+                                "s3:PutObjectAcl"
+                            ],
+                            "Resource": {
+                                "Fn::Sub": "arn:aws:s3:::${PublishBucket}/*"
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "cloudformation:DescribeStackResources",
+                                "cloudformation:DescribeStackResource",
+                                "cloudformation:DescribeStacks"
+                            ],
+                            "Resource": "*"
+                        }
+                    ]
+                }
+            }
+        }
+    }
 }
