@@ -45,6 +45,7 @@ const progressInterval = {
 	}
 
 	const options = program.opts();
+	// console.log("[opts[", options)
 
 	// if using just '-d' then set the deploy to 'dev'
 	if (options.env === true || options.deploy === true) {
