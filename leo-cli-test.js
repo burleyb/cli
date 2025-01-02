@@ -37,6 +37,7 @@ program
 		var buildConfig = require("./lib/build-config").build;
 
 		let c = buildConfig(rootDir);
+		
 		if (pkg.config && pkg.config.leo && pkg.config.leo.type == "microservice") {
 			process.env.leo_config_bootstrap_path = path.resolve(c._meta.microserviceDir, "leo_config.js");
 			process.env.NODE_ENV = options.env || "dev";
