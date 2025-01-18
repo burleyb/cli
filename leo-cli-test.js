@@ -18,6 +18,7 @@ program
 	.option("-i --inspect-brk [port]", "Debug")
 	.option("--inspect [port]", "Debug")
 	.usage('<dir> [options]')
+	.arguments('[directory] [options]')
 	.action(function(dir) {
 		
 		const options = program.opts();
